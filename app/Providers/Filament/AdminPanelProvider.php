@@ -18,6 +18,9 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use App\Filament\Pages\Tenancy\RegisterOwner;
+use App\Models\Owner;
+use App\Filament\Resources\PropertyResource;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -28,8 +31,13 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->tenant(Owner::class)
+            ->tenantRegistration(RegisterOwner::class)
             ->colors([
                 'primary' => Color::Amber,
+            ])
+            ->resources([
+                PropertyResource::class, // Manually register it here
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
