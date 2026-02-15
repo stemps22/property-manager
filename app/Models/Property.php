@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Property extends Model implements HasMedia
 {
@@ -13,8 +14,16 @@ class Property extends Model implements HasMedia
 
     protected $fillable = ['owner_id', 'title', 'price', 'address'];
 
-    public function owner(): BelongsTo
+    public function owner(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+{
+    return $this->belongsTo(Owner::class);
+}
+
+    public function registerMediaConversions(?Media $media = null): void
     {
-        return $this->belongsTo(Owner::class);
+        $this->addMediaConversion('thumb')
+            ->width(100)
+            ->height(100)
+            ->sharpen(10);
     }
 }

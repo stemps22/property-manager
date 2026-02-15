@@ -13,11 +13,10 @@ return new class extends Migration
     {
         Schema::table('properties', function (Blueprint $table) {
             //
-            // $table->foreignId('owner_id')->constrained()->cascadeOnDelete();
+            $table->string('status')->default('Available')->after('price');
         });
     }
 
-    // bleh
     /**
      * Reverse the migrations.
      */
