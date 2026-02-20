@@ -10,26 +10,20 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-{
-    Schema::create('properties', function (Blueprint $table) {
+    {
+        Schema::create('business_user', function (Blueprint $table) {
         $table->id();
-        // This links the property to your Business/Owner for Multi-Tenancy
         $table->foreignId('business_id')->constrained()->cascadeOnDelete();
-        $table->string('title');
-        $table->decimal('price', 12, 2);
-        $table->string('status')->default('Available');
-        $table->boolean('is_published')->default(true);
-        $table->text('address');
-        $table->text('description');
+        $table->foreignId('user_id')->constrained()->cascadeOnDelete(); // 'user_id' refers to your Owner
         $table->timestamps();
     });
-}
+    }
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('properties');
+        Schema::dropIfExists('business_user');
     }
 };

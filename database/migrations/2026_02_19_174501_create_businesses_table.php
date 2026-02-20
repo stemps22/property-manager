@@ -11,20 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('properties', function (Blueprint $table) {
-            //
-            // $table->foreignId('owner_id')->constrained()->cascadeOnDelete();
-        });
+        Schema::create('businesses', function (Blueprint $table) {
+    $table->id();
+    $table->string('name'); // e.g., "Sunrise Rentals"
+    $table->string('slug')->unique(); // For clean URLs
+    $table->timestamps();
+});
     }
 
-    // bleh
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::table('properties', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('businesses');
     }
 };

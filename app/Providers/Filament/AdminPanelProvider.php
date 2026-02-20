@@ -21,6 +21,13 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 use App\Filament\Pages\Tenancy\RegisterOwner;
 use App\Models\Owner;
 use App\Filament\Resources\PropertyResource;
+use App\Filament\Pages\Tenancy\RegisterBusiness;
+use App\Models\Business;
+
+//
+// Find your new user and give them an owner_id (e.g., 1)
+/*$user = \App\Models\User::first();
+$user->update(['owner_id' => 1]);*/
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -28,13 +35,19 @@ class AdminPanelProvider extends PanelProvider
     {
         return $panel
             ->default()
-            ->id('admin')
-            ->path('admin')
-            ->login()
-            ->tenant(Owner::class)
-            ->tenantRegistration(RegisterOwner::class)
+    ->id('admin')
+    ->path('admin')
+    ->login()
+    ->passwordReset()
+    /* * Tenancy Setup: Business is the Tenant (Container).
+     * The User (Owner) belongs to the Business.
+     */
+    ->tenant(Business::class, slugAttribute: 'slug')
+    ->tenantRegistration(RegisterBusiness::class)
+            //->tenant(Owner::class)
+            //->tenantRegistration(RegisterOwner::class)
             ->colors([
-                'primary' => Color::Amber,
+                'Info' => Color::Blue,
             ])
             ->resources([
                 PropertyResource::class, // Manually register it here

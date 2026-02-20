@@ -33,4 +33,5 @@ class Owner extends Model
     {
         return $this->belongsToMany(User::class);
     }
+
 }

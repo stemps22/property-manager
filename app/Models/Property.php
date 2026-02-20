@@ -12,18 +12,27 @@ class Property extends Model implements HasMedia
 {
     use InteractsWithMedia;
 
-    protected $fillable = ['owner_id', 'title', 'price', 'address'];
+    //protected $fillable = ['business_id', 'title', 'price', 'address', 'status', 'is_published'];
+    protected $guarded = [];
 
     public function owner(): \Illuminate\Database\Eloquent\Relations\BelongsTo
 {
-    return $this->belongsTo(Owner::class);
+    return $this->belongsTo(Business::class);
 }
 
-    public function registerMediaConversions(?Media $media = null): void
+public function registerMediaConversions(Media $media = null): void
+{
+    $this->addMediaConversion('thumb')
+        ->width(200)   // Small enough for the table
+        ->height(200)
+        ->sharpen(10)  // Makes it look crisp
+        ->nonQueued(); // This makes it happen instantly during upload
+        $this->addMediaConversion('preview')
+            ->width(800)
+            ->withResponsiveImages();
+}
+public function business(): BelongsTo
     {
-        $this->addMediaConversion('thumb')
-            ->width(100)
-            ->height(100)
-            ->sharpen(10);
+        return $this->belongsTo(Business::class, 'business_id');
     }
 }
