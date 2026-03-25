@@ -6,6 +6,7 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
 use Filament\Schemas\Components\TextInput;
+use Filament\Schemas\Components\Select;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Actions\CreateAction;
 use Filament\Tables\Actions\EditAction;
@@ -28,6 +29,13 @@ class UsersRelationManager extends RelationManager
                     ->email()
                     ->required()
                     ->maxLength(255),
+                Select::make('role')
+                ->options([
+                    'admin' => 'Business Admin',
+                    'staff' => 'Staff',
+                ])
+                ->required()
+                ->default('staff'),
                 TextInput::make('password')
                     ->password()
                     ->dehydrated(fn ($state) => filled($state))
@@ -41,6 +49,13 @@ class UsersRelationManager extends RelationManager
             ->recordTitleAttribute('name')
             ->columns([
                 TextColumn::make('name')->searchable(),
+            TextColumn::make('role')
+                ->badge()
+                ->color(fn (string $state): string => match ($state) {
+                    'admin' => 'danger',
+                    'staff' => 'info',
+                    default => 'gray',
+                }),
                 TextColumn::make('email')->searchable(),
             ])
             ->headerActions([

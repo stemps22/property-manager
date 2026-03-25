@@ -19,12 +19,37 @@ class OwnerResource extends Resource
 {
     protected static ?string $model = Owner::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    // This controls the sidebar link
+    //protected static ?string $navigationIcon = 'heroicon-o-briefcase';
+    protected static ?string $navigationLabel = 'Businesses';
+    protected static ?string $modelLabel = 'Business';
+
+    protected static string | BackedEnum | null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     protected static ?string $recordTitleAttribute = 'Owner';
 
     // This stops the "Model does not have a relationship named business" error
     protected static bool $isScopedToTenant = false;
+
+    public static function shouldRegisterNavigation(): bool
+{
+    return true;
+}
+
+    public static function getNavigationIcon(): string
+{
+    // Returns the Heroicon name as a string
+    return 'heroicon-o-briefcase';
+}
+public static function getNavigationLabel(): string
+{
+    return 'Business Management';
+}
+
+public static function getModelLabel(): string
+{
+    return 'Business';
+}
 
     public static function form(Schema $schema): Schema
     {

@@ -10,6 +10,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Actions\CreateAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\DeleteAction;
+use Filament\Schemas\Components\Select;
 
 class UsersRelationManager extends RelationManager
 {
@@ -31,6 +32,13 @@ class UsersRelationManager extends RelationManager
                     ->email()
                     ->required()
                     ->unique(ignoreRecord: true),
+                Select::make('role')
+                ->options([
+                    'admin' => 'Business Admin',
+                    'staff' => 'Staff',
+                ])
+                ->required()
+                ->default('staff'),
 
                 TextInput::make('password')
                     ->password()
@@ -49,6 +57,13 @@ class UsersRelationManager extends RelationManager
                     ->sortable(),
                 TextColumn::make('email')
                     ->searchable(),
+                TextColumn::make('role')
+                ->badge()
+                ->color(fn (string $state): string => match ($state) {
+                    'admin' => 'danger',
+                    'staff' => 'info',
+                    default => 'gray',
+                }),
             ])
             ->headerActions([
                 CreateAction::make(),
