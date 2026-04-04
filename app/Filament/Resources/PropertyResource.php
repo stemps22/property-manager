@@ -221,4 +221,17 @@ Textarea::make('address')
             'edit' => Pages\EditProperty::route('/{record}/edit'),
         ];
     }
+    public static function canAccess(): bool
+{
+    $user = auth()->user();
+    $tenant = \Filament\Facades\Filament::getTenant();
+
+    // 1. Super-admins always see everything
+    if ($user?->role === 'super-admin') {
+        return true;
+    }
+
+    // 2. Only show if the tenant has an active subscription
+    return $tenant?->subscribed('default') ?? false;
+}
 }

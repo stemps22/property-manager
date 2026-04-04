@@ -12,8 +12,6 @@ use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Widgets;
 use Filament\Support\Colors\Color;
-use Filament\Widgets\AccountWidget;
-use Filament\Widgets\FilamentInfoWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -31,23 +29,39 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
-            ->registration()
+            ->registration(\App\Filament\Pages\Auth\Register::class)
             ->passwordReset()
             ->emailVerification()
             ->profile()
-            // Branding from Config
+            // 1. Restore 2FA and Profile features
+            ->plugins([
+                BreezyCore::make()
+                    ->myProfile(
+                        shouldRegisterUserMenu: true,
+                        shouldRegisterNavigation: false,
+                        hasAvatars: false,
+                        slug: 'my-profile'
+                    )
+                    // don;t let Breezy override everything
+                    //->withRegistration()
+                    ->enableTwoFactorAuthentication(
+                        force: false, 
+                    ),
+            ])
             ->brandName(config('filament-admin.brand_name'))
             ->colors([
                 'primary' => config('filament-admin.colors.primary'),
                 'gray' => config('filament-admin.colors.gray'),
             ])
             ->font(config('filament-admin.font'))
-            // Tenancy from Config
             ->tenant(
                 model: config('filament-admin.tenant.model'),
                 slugAttribute: config('filament-admin.tenant.slug_attribute'),
                 ownershipRelationship: config('filament-admin.tenant.ownership_relationship')
             )
+            ->tenantMiddleware([
+                \App\Http\Middleware\VerifySubscription::class,
+            ], isPersistent: true)
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([

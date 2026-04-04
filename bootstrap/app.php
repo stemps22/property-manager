@@ -10,8 +10,11 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
-    ->withMiddleware(function (Middleware $middleware): void {
-        //
+    ->withMiddleware(function (Middleware $middleware) {
+        // Register your custom middleware alias here
+        $middleware->alias([
+            'subscribed' => \App\Http\Middleware\VerifySubscription::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
