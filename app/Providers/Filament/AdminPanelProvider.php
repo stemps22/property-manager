@@ -10,6 +10,7 @@ use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
+use Illuminate\Database\Eloquent\Model;
 use Filament\Widgets;
 use Filament\Support\Colors\Color;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -19,6 +20,7 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Jeffgreco13\FilamentBreezy\BreezyCore;
+use App\Filament\Billing\BillingProvider; // Import the new class
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -27,6 +29,11 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->default()
             ->id('admin')
+            ->tenant(\App\Models\Business::class, slugAttribute: 'slug')
+            // Filament 5 Closure-based Billing Provider
+            // This bypasses the need for the 'Contracts\Provider' interface
+            ->tenantBillingProvider(new BillingProvider())
+            ->requiresTenantSubscription()
             ->path('admin')
             ->login()
             ->registration(\App\Filament\Pages\Auth\Register::class)

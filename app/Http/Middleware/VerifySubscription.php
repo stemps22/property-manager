@@ -3,23 +3,31 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Filament\Facades\Filament;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class VerifySubscription
 {
     /**
-     * Handle an incoming request.
+     * Checks if the current tenant (Business) has an active subscription.
+     * If not, it redirects them to the billing portal.
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $business = $request->user()?->latestBusiness;
+        $user = $request->user();
+        $tenant = Filament::getTenant();
 
-        // If the business doesn't have an active subscription,
-        // redirect them to the billing page.
-        if ($business && ! $business->subscribed('default')) {
-            return redirect()->route('billing.portal')
-                ->with('error', 'Please subscribe to a plan to start adding properties.');
+        if ($user && $user->isSuperAdmin()) {
+            return $next($request);
+        }
+        if ($request->routeIs('billing.portal') || $request->routeIs('filament.admin.pages.pricing')) {
+            return $next($request);
+        }
+        // If there is no tenant, or the business is not subscribed, 
+        // redirect to the billing portal we defined earlier.
+        if (! $tenant || ! $tenant->subscribed()) {
+            return redirect()->route('billing.portal', ['tenant' => $tenant]);
         }
 
         return $next($request);

@@ -76,4 +76,16 @@ class User extends Authenticatable implements HasTenants
     {
         return $this->businesses()->where('businesses.id', $tenant->id)->exists();
     }
+    public function isSuperAdmin(): bool
+    {
+        // Example 1: Check a list of specific emails
+        /*$admins = [
+            'admin@yourdomain.com',
+        ];
+
+        return in_array($this->email, $admins);*/
+
+        // Example 2: If you have a 'role' column in your users table:
+        return $this->role === 'super_admin';
+    }
 }
