@@ -2,66 +2,44 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\Subscriptions\Pages\CreateSubscription;
-use App\Filament\Resources\Subscriptions\Pages\EditSubscription;
-use App\Filament\Resources\Subscriptions\Pages\ListSubscriptions;
-use App\Filament\Resources\Subscriptions\Pages\ViewSubscription;
-use App\Filament\Resources\Subscriptions\Schemas\SubscriptionForm;
-use App\Filament\Resources\Subscriptions\Schemas\SubscriptionInfolist;
+use App\Filament\Resources\Subscriptions\Pages;
 use App\Filament\Resources\Subscriptions\Tables\SubscriptionTable;
 use App\Models\Subscription;
-use BackedEnum;
 use Filament\Resources\Resource;
-use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Filament\Support\Icons\Heroicon;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use BackedEnum;
 
 class SubscriptionResource extends Resource
 {
     protected static ?string $model = Subscription::class;
 
-    // Applied your specific formatting rule here
-    protected static string | BackedEnum | null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    /**
+     * Explicitly define the relationship name used for tenant scoping.
+     * This prevents the LogicException by overriding Filament's default guess.
+     */
+    protected static ?string $tenantOwnershipRelationshipName = 'business';
 
-    protected static ?string $recordTitleAttribute = 'Subscription';
-
-    public static function form(Schema $schema): Schema
-    {
-        return SubscriptionForm::configure($schema);
-    }
-
-    public static function infolist(Schema $schema): Schema
-    {
-        return SubscriptionInfolist::configure($schema);
-    }
+    /**
+     * Correct 2026 syntax for Filament 5.
+     */
+    protected static string | BackedEnum | null $navigationIcon = Heroicon::OutlinedCreditCard;
 
     public static function table(Table $table): Table
     {
         return SubscriptionTable::configure($table);
     }
 
-    public static function getRelations(): array
-    {
-        return [];
-    }
-
     public static function getPages(): array
     {
         return [
-            'index' => ListSubscriptions::route('/'),
-            'create' => CreateSubscription::route('/create'),
-            'view' => ViewSubscription::route('/{record}'),
-            'edit' => EditSubscription::route('/{record}/edit'),
+            'index' => Pages\ListSubscriptions::route('/'),
         ];
     }
-
-    public static function getRecordRouteBindingEloquentQuery(): Builder
+    
+    public static function getEloquentQuery(): Builder
     {
-        return parent::getRecordRouteBindingEloquentQuery()
-            ->withoutGlobalScopes([
-                SoftDeletingScope::class,
-            ]);
+        return parent::getEloquentQuery();
     }
 }

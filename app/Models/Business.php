@@ -30,4 +30,8 @@ class Business extends Model
     {
         return 'slug';
     }
+    public function subscriptions(): \Illuminate\Database\Eloquent\Relations\MorphMany
+    {
+        return $this->morphMany(\Laravel\Cashier\Subscription::class, 'billable');
+    }
 }

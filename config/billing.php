@@ -3,15 +3,15 @@
 return [
     'plans' => [
         'starter' => [
-            'name' => 'Starter',
+            'name' => 'Bronze',
             'id' => env('STRIPE_PRICE_BRONZE', 'price_1TFDchBe408SN3kdXW5gfCjI'),
-            'price' => 19,
+            'price' => 250,
             'features' => ['10 Properties', 'Basic Analytics', 'Email Support'],
         ],
         'professional' => [
-            'name' => 'Professional',
+            'name' => 'Silver',
             'id' => env('STRIPE_PRICE_SILVER', 'price_1TFDojBe408SN3kdL8SDrF5J'),
-            'price' => 49,
+            'price' => 375,
             'features' => ['Unlimited Properties', 'Advanced Analytics', 'Priority Support'],
         ],
         'enterprise' => [

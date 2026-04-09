@@ -8,12 +8,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Subscription extends CashierSubscription
 {
     /**
-     * Link the subscription back to the Business (Tenant).
-     * This allows TextColumn::make('tenant.name') to work in your table.
+     * We extend the Cashier model so all Stripe logic remains intact,
+     * but we provide a local class for Filament to hook into.
      */
-    public function tenant(): BelongsTo
+    
+    public function business(): BelongsTo
     {
-        // Adjust 'business_id' if your foreign key is named differently
-        return $this->belongsTo(Business::class, 'business_id');
+        // This links the subscription back to your tenant
+        return $this->belongsTo(Business::class, 'billable_id');
     }
 }

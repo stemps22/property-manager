@@ -7,6 +7,24 @@ use App\Models\Collection;
 use App\Models\Testimonial;
 use App\Models\Business;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+
+/*Route::post('stripe/webhook', function (Request $request) {
+    try {
+        // Using the full, absolute namespace to avoid the "Target class not found" error
+        return app(\Laravel\Cashier\Http\Controllers\WebhookController::class)->handleWebhook($request);
+    } catch (\Throwable $e) {
+        $errorInfo = [
+            'Message' => $e->getMessage(),
+            'File' => $e->getFile(),
+            'Line' => $e->getLine(),
+        ];
+        
+        file_put_contents(base_path('STRIPE_CRASH.txt'), print_r($errorInfo, true));
+        
+        return response('Error Logged', 500);
+    }
+});*/
 
 Route::get('/', function () {
     // 1. Fetch active hero slides ordered by your preference

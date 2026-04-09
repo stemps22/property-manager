@@ -2,60 +2,68 @@
 
 namespace App\Filament\Resources\Subscriptions\Tables;
 
+use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Actions\Action;
-use Filament\Support\Colors\Color;
-use Filament\Support\Icons\Heroicon;
+// Unified Filament 5 Action Namespaces
+use Filament\Actions\Action;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
 
 class SubscriptionTable
 {
-    /**
-     * This method must be named 'configure' to match 
-     * the call in your SubscriptionResource.
-     */
     public static function configure(Table $table): Table
     {
         return $table
             ->columns([
-                TextColumn::make('tenant.name')
-                    ->label('Business')
+                TextColumn::make('name')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('type')
-                    ->label('Plan Name')
-                    ->badge(),
+
+                TextColumn::make('stripe_id')
+                    ->label('Stripe ID')
+                    ->copyable()
+                    ->searchable(),
+
                 TextColumn::make('stripe_status')
                     ->label('Status')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'active' => 'success',
-                        'past_due', 'canceled' => 'danger',
-                        'trialing' => 'info',
-                        default => 'gray',
+                        'past_due', 'unpaid' => 'danger',
+                        'canceled' => 'gray',
+                        default => 'warning',
                     }),
+
+                TextColumn::make('stripe_price')
+                    ->label('Price ID'),
+
                 TextColumn::make('created_at')
-                    ->label('Started')
-                    ->date()
-                    ->sortable(),
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+            ])
+            ->filters([
+                // Add any subscription filters here
             ])
             ->actions([
-                Action::make('downloadInvoice')
-                    ->label('Statement')
-                    ->icon(Heroicon::OutlinedDocumentArrowDown)
-                    ->color(Color::Gray)
-                    ->action(function ($record) {
-                        $business = $record->tenant; 
-                        $invoice = $business->latestInvoice();
-                        
-                        if ($invoice) {
-                            return $business->downloadInvoice($invoice->id, [
-                                'vendor' => config('filament-admin.brand_name'),
-                                'product' => 'Subscription',
-                            ]);
-                        }
-                    }),
+                // If you were using Filament\Tables\Actions\Action, 
+                // change the import to Filament\Actions\Action at the top.
+                Action::make('view_in_stripe')
+                    ->label('View in Stripe')
+                    ->url(fn ($record): string => "https://dashboard.stripe.com/subscriptions/{$record->stripe_id}")
+                    ->openUrlInNewTab()
+                    ->icon('heroicon-m-arrow-top-right-on-square'),
+                
+                EditAction::make(),
+                DeleteAction::make(),
             ])
-            ->defaultSort('created_at', 'desc');
+            ->bulkActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
+                ]),
+            ]);
     }
 }
