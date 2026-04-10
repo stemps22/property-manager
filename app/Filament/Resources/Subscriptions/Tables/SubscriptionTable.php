@@ -5,12 +5,12 @@ namespace App\Filament\Resources\Subscriptions\Tables;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
-// Unified Filament 5 Action Namespaces
 use Filament\Actions\Action;
 use Filament\Actions\EditAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
+use Illuminate\Support\Facades\Auth;
 
 class SubscriptionTable
 {
@@ -37,25 +37,35 @@ class SubscriptionTable
                         default => 'warning',
                     }),
 
-                TextColumn::make('stripe_price')
-                    ->label('Price ID'),
-
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->filters([
-                // Add any subscription filters here
-            ])
             ->actions([
-                // If you were using Filament\Tables\Actions\Action, 
-                // change the import to Filament\Actions\Action at the top.
+                /**
+                 * FIXED: Use billingPortalUrl() instead of redirectToBillingPortal().
+                 * This returns a string so the page loads normally, and only 
+                 * redirects when the user actually clicks the button.
+                 */
+                Action::make('manage_billing')
+                    ->label('Manage Billing')
+                    ->icon('heroicon-m-credit-card')
+                    ->color('success')
+                    ->url(fn ($record) => $record->business->billingPortalUrl(
+                        route('filament.admin.resources.subscriptions.index', [
+                            'tenant' => $record->business->getRouteKey()
+                        ])
+                    ))
+                    ->openUrlInNewTab(),
+
                 Action::make('view_in_stripe')
                     ->label('View in Stripe')
                     ->url(fn ($record): string => "https://dashboard.stripe.com/subscriptions/{$record->stripe_id}")
                     ->openUrlInNewTab()
-                    ->icon('heroicon-m-arrow-top-right-on-square'),
+                    ->icon('heroicon-m-arrow-top-right-on-square')
+                    ->color('gray')
+                    ->visible(fn () => Auth::user()?->is_admin ?? false),
                 
                 EditAction::make(),
                 DeleteAction::make(),
