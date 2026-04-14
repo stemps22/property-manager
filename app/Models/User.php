@@ -17,7 +17,7 @@ use Jeffgreco13\FilamentBreezy\Traits\TwoFactorAuthenticatable;
 
 
 
-class User extends Authenticatable implements HasTenants
+class User extends Authenticatable implements FilamentUser, HasTenants
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, TwoFactorAuthenticatable;
@@ -66,7 +66,21 @@ class User extends Authenticatable implements HasTenants
     {
         return $this->belongsToMany(Business::class);
     }
+    // Assume you have an 'is_admin' boolean or similar check
+    public function canAccessPanel(Panel $panel): bool
+    {
+        // Layer 1: Super Admin Access
+        if ($panel->getId() === 'admin') {
+            return (bool) $this->is_admin && $this->role === 'super_admin';
+        }
 
+        // Layer 2: Client Access
+        if ($panel->getId() === 'app') {
+            return true; // Any authenticated user with a tenant can enter
+        }
+
+        return false;
+    }
     public function getTenants(Panel $panel): array|Collection
     {
         return $this->businesses;

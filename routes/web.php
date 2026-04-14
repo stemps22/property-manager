@@ -9,6 +9,10 @@ use App\Models\Business;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
+Route::get('/test-me', function () {
+    return 'Server is working!';
+});
+
 /*Route::post('stripe/webhook', function (Request $request) {
     try {
         // Using the full, absolute namespace to avoid the "Target class not found" error
@@ -48,11 +52,11 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard', function () {
+/*Route::get('/dashboard', function () {
     return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');*/
 
-Route::middleware('auth')->group(function () {
+/*Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -70,7 +74,7 @@ Route::middleware('auth')->group(function () {
     );
 })->name('billing.portal');
 
-});
+});*/
 
 /*Route::get('/billing-portal', function () {
         // This is a placeholder. 

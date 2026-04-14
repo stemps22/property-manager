@@ -29,13 +29,17 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->default()
             ->id('admin')
-            ->tenant(\App\Models\Business::class, slugAttribute: 'slug')
+            //->tenant(\App\Models\Business::class, slugAttribute: 'slug')
             // Filament 5 Closure-based Billing Provider
             // This bypasses the need for the 'Contracts\Provider' interface
-            ->tenantBillingProvider(new BillingProvider())
-            ->requiresTenantSubscription()
+            //->tenantBillingProvider(new BillingProvider())
+            //->requiresTenantSubscription()
             ->path('admin')
+            ->homeUrl('/admin')
             ->login()
+            ->colors([
+                'primary' => Color::Amber,
+            ])
             ->registration(\App\Filament\Pages\Auth\Register::class)
             ->passwordReset()
             ->emailVerification()
@@ -61,18 +65,18 @@ class AdminPanelProvider extends PanelProvider
                 'gray' => config('filament-admin.colors.gray'),
             ])
             ->font(config('filament-admin.font'))
-            ->tenant(
+            /*->tenant(
                 model: config('filament-admin.tenant.model'),
                 slugAttribute: config('filament-admin.tenant.slug_attribute'),
                 ownershipRelationship: config('filament-admin.tenant.ownership_relationship')
-            )
-            ->tenantMiddleware([
+            )*/
+            /*->tenantMiddleware([
                 \App\Http\Middleware\VerifySubscription::class,
-            ], isPersistent: true)
+            ], isPersistent: true)*/
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
-                Pages\Dashboard::class,
+                \Filament\Pages\Dashboard::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
@@ -91,7 +95,7 @@ class AdminPanelProvider extends PanelProvider
                 DispatchServingFilamentEvent::class,
             ])
             ->authMiddleware([
-                Authenticate::class,
+                \Filament\Http\Middleware\Authenticate::class,
             ])
             ->sidebarCollapsibleOnDesktop(config('filament-admin.sidebar_collapsible'))
             ->sidebarWidth(config('filament-admin.sidebar_width'))

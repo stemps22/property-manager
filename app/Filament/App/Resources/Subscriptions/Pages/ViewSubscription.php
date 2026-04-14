@@ -1,0 +1,19 @@
+<?php
+
+namespace App\Filament\App\Resources\Subscriptions\Pages;
+
+use App\Filament\App\Resources\SubscriptionResource;
+use Filament\Actions\EditAction;
+use Filament\Resources\Pages\ViewRecord;
+
+class ViewSubscription extends ViewRecord
+{
+    protected static string $resource = SubscriptionResource::class;
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            EditAction::make(),
+        ];
+    }
+}

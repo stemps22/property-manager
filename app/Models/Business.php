@@ -3,12 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Laravel\Cashier\Billable;
 
 class Business extends Model
 {
     use Billable;
+    use HasFactory;
     // Filament v5 requires this to be open for the 'schema' data to save
     protected $guarded = [];
 

@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\HeroSlides\Pages;
 
-use App\Filament\Resources\HeroSlides\HeroSlideResource;
+use App\Filament\Resources\HeroSlideResource;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ViewAction;
 use Filament\Resources\Pages\EditRecord;

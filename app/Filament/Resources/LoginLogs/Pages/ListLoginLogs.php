@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\LoginLogs\Pages;
 
-use App\Filament\Resources\LoginLogs\LoginLogResource;
+use App\Filament\Resources\LoginLogResource;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 

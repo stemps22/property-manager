@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\HeroSlides\Pages;
 
-use App\Filament\Resources\HeroSlides\HeroSlideResource;
+use App\Filament\Resources\HeroSlideResource;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateHeroSlide extends CreateRecord
